@@ -25,8 +25,8 @@ func Authorizer(e *casbin.Enforcer, users model.Users) func(next http.Handler) h
 					return
 				}
 			}
-			// if it's a member, check if the user still exists
-			if role == "member" {
+			// check if the user still exists
+			if role != "anonymous" {
 				exists := users.Exists(uid)
 				if !exists {
 					writeError(http.StatusForbidden, "FORBIDDEN", w, errors.New("user does not exist"))
