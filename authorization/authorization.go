@@ -39,12 +39,12 @@ func Authorizer(e *casbin.Enforcer, users model.Users) func(next http.Handler) h
 				writeError(http.StatusInternalServerError, "ERROR", w, err)
 				return
 			}
-			if res {
-				next.ServeHTTP(w, r)
-			} else {
+
+			if !res {
 				writeError(http.StatusForbidden, "FORBIDDEN", w, errors.New("unauthorized"))
 				return
 			}
+			next.ServeHTTP(w, r)
 		}
 
 		return http.HandlerFunc(fn)
