@@ -8,6 +8,7 @@ import (
 	"github.com/casbin/casbin"
 	"github.com/eminetto/casbin-http-role-example/authorization"
 	"github.com/eminetto/casbin-http-role-example/model"
+	"github.com/eminetto/casbin-http-role-example/roles"
 	"github.com/eminetto/casbin-http-role-example/security"
 	"github.com/gorilla/mux"
 )
@@ -36,9 +37,9 @@ func main() {
 
 func createUsers() model.Users {
 	users := model.Users{}
-	users = append(users, model.User{ID: 1, Name: "Admin", Role: "admin"})
-	users = append(users, model.User{ID: 2, Name: "Sabine", Role: "member"})
-	users = append(users, model.User{ID: 3, Name: "Sepp", Role: "member"})
+	users = append(users, model.User{ID: 1, Name: "Admin", Role: roles.Admin})
+	users = append(users, model.User{ID: 2, Name: "Sabine", Role: roles.Member})
+	users = append(users, model.User{ID: 3, Name: "Sepp", Role: roles.Member})
 	return users
 }
 
