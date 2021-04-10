@@ -1,12 +1,16 @@
 package model
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/eminetto/casbin-http-role-example/roles"
+)
 
 // User is a user
 type User struct {
 	ID   int
 	Name string
-	Role string
+	Role roles.Role
 }
 
 // Users is a list of users

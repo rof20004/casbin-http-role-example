@@ -7,6 +7,7 @@ import (
 
 	"github.com/casbin/casbin"
 	"github.com/eminetto/casbin-http-role-example/model"
+	"github.com/eminetto/casbin-http-role-example/roles"
 	"github.com/eminetto/casbin-http-role-example/security"
 )
 
@@ -14,7 +15,7 @@ import (
 func Authorizer(e *casbin.Enforcer, users model.Users) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		fn := func(w http.ResponseWriter, r *http.Request) {
-			role := "anonymous"
+			role := roles.Anonymous
 			tokenString := r.Header.Get("Authorization")
 			var uid int
 			var err error
@@ -26,7 +27,7 @@ func Authorizer(e *casbin.Enforcer, users model.Users) func(next http.Handler) h
 				}
 			}
 			// check if the user still exists
-			if role != "anonymous" {
+			if role != roles.Anonymous {
 				exists := users.Exists(uid)
 				if !exists {
 					writeError(http.StatusForbidden, "FORBIDDEN", w, errors.New("user does not exist"))
@@ -34,7 +35,7 @@ func Authorizer(e *casbin.Enforcer, users model.Users) func(next http.Handler) h
 				}
 			}
 			// casbin enforce
-			res, err := e.EnforceSafe(role, r.URL.Path, r.Method)
+			res, err := e.EnforceSafe(string(role), r.URL.Path, r.Method)
 			if err != nil {
 				writeError(http.StatusInternalServerError, "ERROR", w, err)
 				return
@@ -51,7 +52,7 @@ func Authorizer(e *casbin.Enforcer, users model.Users) func(next http.Handler) h
 	}
 }
 
-func parseToken(token string) (int, string, error) {
+func parseToken(token string) (int, roles.Role, error) {
 	t, err := security.ParseToken(token)
 	if err != nil {
 		return 0, "", nil
@@ -61,7 +62,7 @@ func parseToken(token string) (int, string, error) {
 		return 0, "", nil
 	}
 	userID := tData["userID"].(float64)
-	role := tData["role"].(string)
+	role := tData["role"].(roles.Role)
 	return int(userID), role, nil
 }
 

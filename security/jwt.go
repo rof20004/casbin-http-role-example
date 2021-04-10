@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/eminetto/casbin-http-role-example/roles"
+
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
@@ -15,7 +17,7 @@ const (
 )
 
 //NewToken create a new token
-func NewToken(id int, role string) (string, error) {
+func NewToken(id int, role roles.Role) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"role":   role,
 		"userID": id,
